@@ -55,6 +55,7 @@ func _on_update_currency(currency: int):
 	currency_label.text = "Money: " + str(currency)
 	
 func _on_visual_weapon_changed(limb: String, sprite_path: String):
+	# this is the part we would use for when we add animations
 	var limb_btn = middle_column.get_node_or_null("%" + limb)
 	if limb_btn:
 		limb_btn.texture_normal = load(sprite_path)
