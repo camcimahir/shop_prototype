@@ -15,7 +15,7 @@ func _ready():
 	
 	# we can enable the commected line if we want hovering over limb to also select
 	for button in middle_column.get_children():
-		#button.focus_entered.connect(func(): view_model.select_limb(button.name))
+		button.focus_entered.connect(func(): view_model.select_limb(button.name))
 		button.pressed.connect(func(): view_model.select_limb(button.name))
 		
 	_on_update_currency(view_model.model.currency)
@@ -40,7 +40,13 @@ func on_new_limb_selected(_limb: String, weapons: Array):
 		btn.focus_entered.connect(func(): view_model.display_weapon_info(weapon_id))
 		
 		# click to purchase
-		btn.pressed.connect(func(): view_model.equip_purchase_weapon(weapon_id))
+		btn.pressed.connect(func(): _on_weapon_button_pressed(weapon_id))
+
+func _on_weapon_button_pressed(weapon_id: String):
+	if view_model.model.items_in_inventory.has(weapon_id):
+		view_model.equip_weapon(weapon_id)
+	else:
+		view_model.purchase_weapon(weapon_id)
 
 func _on_change_weapon_info(weapon_name: String, information: String, cost: int, owned: bool):
 	var status
@@ -54,11 +60,20 @@ func _on_change_weapon_info(weapon_name: String, information: String, cost: int,
 func _on_update_currency(currency: int):
 	currency_label.text = "Money: " + str(currency)
 	
-func _on_visual_weapon_changed(limb: String, sprite_path: String):
-	# this is the part we would use for when we add animations
-	var limb_btn = middle_column.get_node_or_null("%" + limb)
-	if limb_btn:
-		limb_btn.texture_normal = load(sprite_path)
+func _on_visual_weapon_changed(limb_type_enum: int, sprite_path: String):
+	# Convert the limb enum (0, 1, 2, 3) to the corresponding string node name ("head", "arms", "torso", "legs")
+	# We rely on the order matching shopModel.limbType { HEAD, ARMS, TORSO, LEGS }
+	var limb_name = ""
+	match limb_type_enum:
+		0: limb_name = "head" # shopModel.limbType.HEAD
+		1: limb_name = "arms" # shopModel.limbType.ARMS
+		2: limb_name = "torso" # shopModel.limbType.TORSO
+		3: limb_name = "legs" # shopModel.limbType.LEGS
+	
+	if limb_name != "":
+		var limb_btn = middle_column.get_node_or_null(limb_name)
+		if limb_btn:
+			limb_btn.texture_normal = load(sprite_path)
 
 #			
 # store what's equipped
