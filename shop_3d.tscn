@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://jrmbyeeqb2b"]
+[gd_scene load_steps=14 format=3 uid="uid://jrmbyeeqb2b"]
 
 [ext_resource type="PackedScene" uid="uid://dw5u8242o6f80" path="res://shop.tscn" id="1_c7r2a"]
 [ext_resource type="Script" uid="uid://cpnobwy67evyr" path="res://shop_3d.gd" id="1_nij60"]
@@ -21,6 +21,15 @@ sky = SubResource("Sky_b7tub")
 [sub_resource type="BoxMesh" id="BoxMesh_lr0w4"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_gf63k"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_nij60"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_nij60"]
+viewport_path = NodePath("screenFeed")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b7tub"]
+resource_local_to_scene = true
+albedo_texture = SubResource("ViewportTexture_nij60")
 
 [node name="shop3d" type="Node3D"]
 script = ExtResource("1_nij60")
@@ -59,5 +68,14 @@ unique_name_in_owner = true
 
 [node name="character" parent="CanvasLayer/Shop/HBoxContainer" index="1"]
 visible = false
+
+[node name="screen1" type="MeshInstance3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1.3561238, 0, -0.04273579, 0, 1, 0, 0.6410368, 0, 0.09040826, 2, 0.5, 0)
+mesh = SubResource("BoxMesh_nij60")
+surface_material_override/0 = SubResource("StandardMaterial3D_b7tub")
+
+[node name="screenFeed" type="SubViewport" parent="."]
+unique_name_in_owner = true
 
 [editable path="CanvasLayer/Shop"]

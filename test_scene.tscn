@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://dol4m7pt1mh7h"]
+
+[ext_resource type="Script" uid="uid://o7ha1sxmmbtn" path="res://test_scene.gd" id="1_uhqqe"]
+
+[sub_resource type="Environment" id="Environment_6adnx"]
+background_mode = 1
+background_color = Color(0.64705884, 0, 0, 1)
+
+[node name="testScene" type="Node3D"]
+script = ExtResource("1_uhqqe")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_6adnx")

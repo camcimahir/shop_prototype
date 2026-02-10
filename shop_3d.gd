@@ -36,6 +36,12 @@ func _ready():
 	
 	_on_update_currency(view_model.model.currency)
 	view_model.select_limb("head") 
+	
+	
+	var externalScene = load("res://test_scene.tscn").instantiate()
+	var externalCamera = externalScene.get_node_or_null("Camera3D")
+	if externalCamera:
+		display_scene_on_screen(externalScene, externalCamera, screen1)
 
 
 func _input(event):
@@ -55,7 +61,13 @@ func _input(event):
 		current_weapon_index = (current_weapon_index + dir) % left_column.get_child_count()
 		_hover_weapon()
 
-
+	# 
+	elif event.is_action_pressed("ui_accept"):
+		if left_column.get_child_count() == 0:
+			return
+			
+		var btn := left_column.get_child(current_weapon_index)
+		_on_weapon_button_pressed(btn.text)
 
 
 func on_new_limb_selected(limb: String, weapons: Array):
@@ -175,3 +187,52 @@ func _render_weapon_highlight():
 	# apply color to the right one
 	if current_weapon_index < left_column.get_child_count():
 		left_column.get_child(current_weapon_index).modulate = Color(1, 1, 0)
+
+
+@onready var screenFeed: SubViewport = %screenFeed
+@onready var screen1: MeshInstance3D = %screen1
+
+# this is dictionary that keeps track of the viewports For example: (screen1: screenFeed)
+var screen_viewports = {}
+
+func display_scene_on_screen(scene: Node, camera: Camera3D, screen: MeshInstance3D):
+	if not scene or not camera or not screen:
+		return
+
+	# check to see if there are any other screens displayed here
+	# if so remove them
+	if screen_viewports.has(screen):
+		var oldViewPort = screen_viewports[screen]
+		if is_instance_valid(oldViewPort):
+			oldViewPort.queue_free()
+		screen_viewports.erase(screen)
+
+
+	var viewport = SubViewport.new()
+	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS # this is what makes it live
+	
+	# we create the viewport in a way with this line
+	viewport.own_world_3d = true
+	
+	# we add that viewport to our scene
+	add_child(viewport)
+	# we store it in our dictionary which will help when we are dealing with multiple screens
+	screen_viewports[screen] = viewport
+
+	# this is part that is a bit scary we detach the scene from its original parent
+	# we have to do this because there can only be a single parent for a node
+	# if this seems to be causing an error we can reattach it to the its parent node after we leave the shop
+	var old_parent = scene.get_parent()
+	if old_parent:
+		old_parent.remove_child(scene)
+		
+	viewport.add_child(scene)
+	
+	camera.current = true
+	
+	var mat = StandardMaterial3D.new()
+	var tex = viewport.get_texture()
+	mat.albedo_texture = tex
+	mat.emission_enabled = true
+	mat.emission_texture = tex
+	screen.material_override = mat
