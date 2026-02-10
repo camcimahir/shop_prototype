@@ -1,6 +1,7 @@
-[gd_scene load_steps=10 format=3 uid="uid://jrmbyeeqb2b"]
+[gd_scene load_steps=11 format=3 uid="uid://jrmbyeeqb2b"]
 
 [ext_resource type="PackedScene" uid="uid://dw5u8242o6f80" path="res://shop.tscn" id="1_c7r2a"]
+[ext_resource type="Script" uid="uid://cpnobwy67evyr" path="res://shop_3d.gd" id="1_nij60"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_nij60"]
 
@@ -22,6 +23,7 @@ sky = SubResource("Sky_b7tub")
 [sub_resource type="BoxMesh" id="BoxMesh_gf63k"]
 
 [node name="shop3d" type="Node3D"]
+script = ExtResource("1_nij60")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_h8qvl")
@@ -32,24 +34,30 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 3)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 
-[node name="Node3D" type="Node3D" parent="."]
+[node name="character" type="Node3D" parent="."]
 
-[node name="Head" type="MeshInstance3D" parent="Node3D"]
+[node name="Head" type="MeshInstance3D" parent="character"]
 transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 2.5, 0)
 mesh = SubResource("SphereMesh_nwa54")
 
-[node name="Arms" type="MeshInstance3D" parent="Node3D"]
+[node name="Arms" type="MeshInstance3D" parent="character"]
 transform = Transform3D(-8.742278e-09, -1.75, 0, 0.2, -7.649493e-08, 0, 0, 0, 0.2, 0, 1.95, 0)
 mesh = SubResource("CapsuleMesh_pmgts")
 
-[node name="Torso" type="MeshInstance3D" parent="Node3D"]
+[node name="Torso" type="MeshInstance3D" parent="character"]
 transform = Transform3D(0.75, 0, 0, 0, 1.5, 0, 0, 0, 0.4, 0, 1, 0)
 mesh = SubResource("BoxMesh_lr0w4")
 
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="Node3D"]
+[node name="Legs" type="MeshInstance3D" parent="character"]
 transform = Transform3D(1, 0, 0, 0, 0.5, 0, 0, 0, 0.3, 0, -0.2, 0)
 mesh = SubResource("BoxMesh_gf63k")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="Shop" parent="CanvasLayer" instance=ExtResource("1_c7r2a")]
+unique_name_in_owner = true
+
+[node name="character" parent="CanvasLayer/Shop/HBoxContainer" index="1"]
+visible = false
+
+[editable path="CanvasLayer/Shop"]
